@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecom_admin_08/models/address_model.dart';
 
+const String collectionProduct = "Users";
 const String userFieldId = 'userId';
 const String userFieldDisplayName = 'displayName';
 const String userFieldAddressModel = 'addressModel';
@@ -39,7 +40,7 @@ class UserModel {
     return <String,dynamic>{
       userFieldId : userId,
       userFieldDisplayName : displayName,
-      userFieldAddressModel : addressModel,
+      userFieldAddressModel : addressModel ?.toMap(),
       userFieldCreationTime : userCreationTime,
       userFieldImageUrl : userImageUrl,
       userFieldGender : gender,
@@ -52,7 +53,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String,dynamic>map)=>UserModel(
       userId: map[userFieldId],
       displayName: map[userFieldDisplayName],
-      addressModel: map[userFieldAddressModel],
+      addressModel: map[userFieldAddressModel] == null ?  null : AddressModel.fromMap(map[userFieldAddressModel]),
       userCreationTime: map[userFieldCreationTime],
       userImageUrl: map[userFieldImageUrl],
       gender: map[userFieldGender],

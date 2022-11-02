@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+const String collectionProduct = "Date";
 const String timeStampField = 'timeStamp';
 const String dayField = 'day';
 const String monthField = 'month';

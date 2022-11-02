@@ -1,5 +1,6 @@
 import 'date_model.dart';
 
+const String collectionProduct = "Purchase";
 const String purchaseFieldId='purchaseId';
 const String purchaseFieldProductId='productId';
 const String purchaseFieldQuantity='purchaseQuantity';
@@ -29,7 +30,7 @@ class PurchaseModel {
       purchaseFieldProductId : purchaseId,
       purchaseFieldQuantity : purchaseQuantity,
       purchaseFieldPrice : purchasePrice,
-      purchaseFieldDateModel : dateModel,
+      purchaseFieldDateModel : dateModel.toMap(),
 
     };
   }
@@ -38,6 +39,6 @@ class PurchaseModel {
       purchaseId: map[purchaseFieldId],
       purchaseQuantity: map[purchaseFieldQuantity],
       purchasePrice: map[purchaseFieldPrice],
-      dateModel: map[purchaseFieldDateModel]
+      dateModel: DateModel.fromMap(map[purchaseFieldDateModel])
   );
 }

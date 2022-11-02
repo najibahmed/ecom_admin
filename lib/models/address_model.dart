@@ -1,4 +1,4 @@
-
+const String collectionProduct = "Address";
 const String addressFieldLine1='Line1';
 const String addressFieldLine2='Line2';
 const String addressCity='City';

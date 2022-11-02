@@ -1,4 +1,4 @@
-
+const String collectionCategory = "Category";
 const  String categoryFieldId ='categoryId';
 const  String categoryFieldName ='categoryName';
 const  String categoryFieldProductCount ='productCount';
