@@ -1,12 +1,12 @@
-
+import 'package:ecom_admin_08/pages/launcher_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../Auth/authservice.dart';
-import 'launcher_page.dart';
+
+import '../auth/authservice.dart';
 
 class LoginPage extends StatefulWidget {
-  static const String routeName="/login_page";
+  static const String routeName = '/login';
   const LoginPage({Key? key}) : super(key: key);
 
   @override
@@ -14,10 +14,81 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey=GlobalKey<FormState>();
-  final _emailController=TextEditingController();
-  final _passwordController=TextEditingController();
-  String _errMsg='';
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String _errMsg = '';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            shrinkWrap: true,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    prefixIcon: Icon(Icons.email),
+                    labelText: 'Email Address'
+                  ),
+                  validator: (value) {
+                    if(value == null || value.isEmpty) {
+                      return 'Provide a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: TextFormField(
+                  controller: _passwordController,
+                  //obscureText: true,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    prefixIcon: Icon(Icons.lock),
+                    labelText: 'Password(at least 6 characters)'
+                  ),
+                  validator: (value) {
+                    if(value == null || value.isEmpty) {
+                      return 'Provide a valid password';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _authenticate,
+                child: const Text('Login as Admin'),
+              ),
+              Row(
+                children: [
+                  const Text('Forgot password', style: TextStyle(fontSize: 18, color: Colors.red),),
+                  TextButton(
+                    onPressed: () {
+                      AuthService.forgotPassword();
+                    },
+                    child: const Text('Click Here'),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(_errMsg, style: const TextStyle(fontSize: 18, color: Colors.red),),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -25,93 +96,32 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
     super.dispose();
   }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  decoration:const InputDecoration(
-                    labelText: 'Email Address',
-                    prefixIcon: Icon(Icons.email),
-                    filled: true,
-                  ) ,
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return "Please fill up email field";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10,),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration:const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                    filled: true,
-                  ) ,
-                  validator: (value){
-                    if(value==null || value.isEmpty){
-                      return "Please fill up password field";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10,),
-                ElevatedButton(
-                    onPressed: (){
-                      _authenticate();
-                    },
-                    child: const Text("Login As Admin")
-                ),
-                const SizedBox(height: 10,),
-                Text(_errMsg,style:const TextStyle(fontSize: 20,color: Colors.red),)
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  void _authenticate()async {
-    if(_formKey.currentState!.validate()){
-      EasyLoading.show(status: 'please wait',dismissOnTap: false);
-      final email=_emailController.text;
-      final password=_passwordController.text;
-      try{
-        final status=await AuthService.loginAdmin(email,password);
+  void _authenticate() async {
+    if(_formKey.currentState!.validate()) {
+      EasyLoading.show(status: 'Please wait', dismissOnTap: false);
+      final email = _emailController.text;
+      final password = _passwordController.text;
+      try {
+        final status = await AuthService.login(email, password);
         EasyLoading.dismiss();
-        if(status){
-          if(mounted){
+        if(status) {
+          if(mounted) {
             Navigator.pushReplacementNamed(context, LauncherPage.routeName);
           }
-        }else{
-          await AuthService.logOut();
+        } else {
+          await AuthService.logout();
           setState(() {
-            _errMsg= "yor are not a admin";
+            _errMsg = 'This email address is not registered as Admin.';
           });
         }
 
-
-      }on FirebaseAuthException catch (error){
+      } on FirebaseAuthException catch (error) {
         EasyLoading.dismiss();
         setState(() {
-          _errMsg=error.message!;
+          _errMsg = error.message!;
         });
       }
     }
   }
-
 }

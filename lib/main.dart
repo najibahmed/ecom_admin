@@ -1,63 +1,67 @@
-import 'package:ecom_admin_08/pages/add_product_page.dart';
-import 'package:ecom_admin_08/pages/category_page.dart';
-import 'package:ecom_admin_08/pages/dashboard_page.dart';
-import 'package:ecom_admin_08/pages/launcher_page.dart';
-import 'package:ecom_admin_08/pages/login_page.dart';
-import 'package:ecom_admin_08/pages/order_page.dart';
-import 'package:ecom_admin_08/pages/product_details_page.dart';
-import 'package:ecom_admin_08/pages/product_repurchase_page.dart';
-import 'package:ecom_admin_08/pages/report_page.dart';
-import 'package:ecom_admin_08/pages/settings_page.dart';
-import 'package:ecom_admin_08/pages/user_list_page.dart';
-import 'package:ecom_admin_08/pages/view_product_page.dart';
+import 'package:ecom_admin_08/pages/order_details_Page.dart';
 import 'package:ecom_admin_08/providers/product_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:ecom_admin_08/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
-void main()async {
+import 'pages/add_product_page.dart';
+import 'pages/category_page.dart';
+import 'pages/dashboard_page.dart';
+import 'pages/launcher_page.dart';
+import 'pages/login_page.dart';
+import 'pages/notification_page.dart';
+import 'pages/order_page.dart';
+import 'pages/product_details_page.dart';
+import 'pages/product_repurchase_page.dart';
+import 'pages/report_page.dart';
+import 'pages/settings_page.dart';
+import 'pages/user_list_page.dart';
+import 'pages/view_product_page.dart';
+import 'providers/notification_provider.dart';
+import 'providers/order_provider.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context)=>ProductProvider()),
-      ],
-      child: MyApp())
-  );
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => ProductProvider()),
+    ChangeNotifierProvider(create: (_) => OrderProvider()),
+    ChangeNotifierProvider(create: (_) => UserProvider()),
+    ChangeNotifierProvider(create: (_) => NotificationProvider()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.blue,
       ),
       builder: EasyLoading.init(),
       initialRoute: LauncherPage.routeName,
       routes: {
-        LauncherPage.routeName:(_)=> const LauncherPage(),
-        LoginPage.routeName:(_)=> const LoginPage(),
-        DashboardPage.routeName:(_)=> const DashboardPage(),
-        AddProductPage.routeName:(_)=> const AddProductPage(),
-        ViewProductPage.routeName:(_)=> const ViewProductPage(),
-        ProductDetails.routeName:(_)=> const ProductDetails(),
-        CategoryPage.routeName:(_)=> const CategoryPage(),
-        OrderListPage.routeName:(_)=> const OrderListPage(),
-        ReportPage.routeName:(_)=> const ReportPage(),
-        Settings.routeName:(_)=> const Settings(),
-        ProductRepurchase.routeName:(_)=> const ProductRepurchase(),
-        UserList.routeName:(_)=> const UserList(),
-
-
+        LauncherPage.routeName: (_) => const LauncherPage(),
+        LoginPage.routeName: (_) => const LoginPage(),
+        DashboardPage.routeName: (_) => const DashboardPage(),
+        AddProductPage.routeName: (_) => const AddProductPage(),
+        ViewProductPage.routeName: (_) => const ViewProductPage(),
+        ProductDetailsPage.routeName: (_) => const ProductDetailsPage(),
+        CategoryPage.routeName: (_) => const CategoryPage(),
+        OrderPage.routeName: (_) => const OrderPage(),
+        OrderDetailsPage.routeName: (_) => const OrderDetailsPage(),
+        NotificationPage.routeName: (_) => const NotificationPage(),
+        ReportPage.routeName: (_) => const ReportPage(),
+        SettingsPage.routeName: (_) => const SettingsPage(),
+        ProductRepurchasePage.routeName: (_) => const ProductRepurchasePage(),
+        UserListPage.routeName: (_) => const UserListPage(),
       },
     );
   }
-
 }
-
-
